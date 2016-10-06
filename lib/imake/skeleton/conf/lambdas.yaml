@@ -1,0 +1,26 @@
+---
+lambdas:
+  exampleLambda:
+    runtime: nodejs
+    execution_role: exampleRole
+    output: true
+
+lambda_execution_roles:
+  exampleRole: [
+    {
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:*:*:*"
+    }, {
+      "Action": [
+        "cloudformation:DescribeStacks",
+        "cloudformation:ListStackResources"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]

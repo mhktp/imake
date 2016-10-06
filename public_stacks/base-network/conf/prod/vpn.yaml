@@ -1,0 +1,10 @@
+---
+customer_gateways:
+  NewYork:
+    bgp_asn: 00000
+    peer_ip: 1.2.3.4
+    connects_to_vpcs: [ Prod, Mgmt ]
+  London:
+    bgp_asn: 00001
+    peer_ip: 1.2.3.4
+    connects_to_vpcs: [ Prod, Mgmt ]

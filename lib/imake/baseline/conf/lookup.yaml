@@ -1,0 +1,57 @@
+---
+lambdas:
+  lookupStackParameters:
+    runtime: nodejs
+    execution_role: lookupRole
+    output: true
+  lookupStackOutputs:
+    runtime: nodejs
+    execution_role: lookupRole
+    output: true
+  lookupStackResources:
+    runtime: nodejs
+    execution_role: lookupRole
+    output: true
+  lookupAmis:
+    runtime: nodejs
+    execution_role: lookupAmiRole
+    output: true
+
+
+
+lambda_execution_roles:
+  lookupRole: [
+    {
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:*:*:*"
+    }, {
+      "Action": [
+        "cloudformation:DescribeStacks",
+        "cloudformation:ListStackResources"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+  lookupAmiRole: [
+    {
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:*:*:*"
+    }, {
+      "Action": [
+        "ec2:DescribeImages"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]

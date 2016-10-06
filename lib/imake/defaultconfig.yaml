@@ -1,0 +1,15 @@
+---
+aws_iam_username:
+aws_on_failure: DO_NOTHING
+region: us-east-1
+primary_account: prod
+use_dynamodb: false
+accounts:
+  prod:
+    account_number: 123456789012
+    template_bucket: imake-resources
+    region_map:
+      us-east-1:
+        domain: us-east-1.compute.internal
+        AZs: [ a, b, d ]
+        dc: us1

@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'bundler/setup'
+require 'imake/options'
+require 'imake/istack'
+
+opts = cliopts ARGV
+
+# Although Secrets is a helper and this should be elsewhere for clean code, we only want the cache purged at the end
+# of a run. If this code is put in with the helper then it will be cleared every time CfnDSL is run and won't work.
+at_exit do
+  Secrets.purge if defined? Secrets
+end
+
+# Commands as written under the commander module accept parameters with names that map to options
+# This allows us to query the command method for its named parameters and pass in those options dynamically
+params = Commander.method(opts[:command].to_sym).parameters.map { |param|
+  case param[1].to_s
+    when 'istack'
+      IStack.new($config.stack, $config.nameoverride, $config.uuidadd)
+    when 'argv'
+      ARGV.shift || abort("Error: Missing Parameter. Run `imake -h` for details.")
+    else
+      $config.send param[1].to_s.to_sym
+  end
+}
+
+# Finally, call the method
+Commander.send opts[:command].to_sym, *params

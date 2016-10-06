@@ -1,0 +1,58 @@
+---
+corporate_cidrs: &corporate_cidrs
+  new_york:    1.2.3.4/16
+  los_angeles: 2.3.4.5/17
+  london:      3.4.5.6/18
+
+vpc_networks:
+  Staging:
+    CIDR: 10.32.0.0/16
+    subnetMask: 23
+    nacl_groups: [ allow_all_traffic ]
+    security_groups: [ corporateadmin, corporateaccess ]
+    subnets:
+      Public: [ IGW, NAT ]
+      Private: [ NAT ]
+  Mgmt:
+    CIDR: 10.33.0.0/16
+    subnetMask: 23
+    nacl_groups: [ allow_all_traffic ]
+    security_groups: [ corporateadmin, corporateaccess ]
+    peers_to: Staging
+    subnets:
+      Public: [ IGW, NAT ]
+      Private: [ NAT ]
+
+nacl_groups:
+  allow_all_traffic:
+    AllowAllIngress:
+      cidr: 0.0.0.0/0
+      proto: -1
+      action: allow
+      ruleno: 100
+    AllowAllEgress:
+      cidr: 0.0.0.0/0
+      proto: -1
+      action: allow
+      ruleno: 100
+      egress: true
+
+security_groups:
+  corporateadmin:
+    services:
+      ssh: tcp|22|22
+      winrm: tcp|5985|5986
+    cidrs:
+      <<: *corporate_cidrs
+  corporateaccess:
+    services:
+      http: tcp|80|80
+      https: tcp|443|443
+    cidrs:
+      <<: *corporate_cidrs
+  publicaccess:
+    services:
+      http: tcp|80|80
+      https: tcp|443|443
+    cidrs:
+      all: 0.0.0.0/0
