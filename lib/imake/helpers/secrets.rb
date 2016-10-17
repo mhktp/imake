@@ -88,7 +88,7 @@ class Secrets
       text.scan(/ENCRYPT\[([\w]+)\|\|([^\|\[\]]+)\]/).each do |key, secret|
         awskeyid = "arn:aws:kms:us-east-1:#{$config.accounts[$config.primary_account]['account_number']}:alias/#{key}"
         encrypted_secret = Base64.strict_encode64(kms.encrypt(key_id: awskeyid, plaintext: secret).ciphertext_blob)
-        text.gsub!("ENCRYPT[#{key}||#{secret}", "DECRYPT[#{key}||#{encrypted_secret}]")
+        text.gsub!("ENCRYPT[#{key}||#{secret}]", "DECRYPT[#{key}||#{encrypted_secret}]")
       end
       File.write(filename, text)
     end
